@@ -23,4 +23,16 @@ public class TestController {
     public String getHomeV2() throws InterruptedException {
         return "Good Luck";
     }
+
+    @GetMapping(path = "/order")
+    public String getOrder() throws InterruptedException {
+        testHelperService.testOrderAsync();
+        return "Test Order";
+    }
+
+    @GetMapping(path = "/notification")
+    public String getNotification() throws InterruptedException {
+        testHelperService.testNotificationAsync();
+        return "Test Notification";
+    }
 }
