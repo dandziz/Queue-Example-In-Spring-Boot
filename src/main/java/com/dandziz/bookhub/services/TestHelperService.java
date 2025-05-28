@@ -1,6 +1,7 @@
 package com.dandziz.bookhub.services;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.InternalException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -27,17 +28,27 @@ public class TestHelperService {
 
     @Async
     public void testAsync() throws InterruptedException {
-        taskQueueService.addTask(() -> {
+        taskQueueService.submitTask(() -> {
             try {
                 Thread currentThread = Thread.currentThread();
                 String time = time();
                 int sleepTime = ThreadLocalRandom.current().nextInt(2000, 5001);
                 System.out.format("[%s] Task started, sleeping for %d ms, thread %d\n", time, sleepTime, currentThread.threadId());
-
+                Thread.sleep(1000);
+                double a = Math.random();
+                if (a > 0.5) {
+                    System.out.println("===============================================================================");
+                    throw new InterruptedException();
+                } else if (a >= 0.2 && a < 0.4) {
+                    System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                    throw new InternalException("Not");
+                }
                 Thread.sleep(sleepTime);
-                getData();
+//                getData();
 
                 System.out.format("[%s] Task finished, thread %d\n", time, currentThread.threadId());
+
+
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
